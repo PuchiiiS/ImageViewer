@@ -12,6 +12,7 @@ public class FileImageLoader implements ImageLoader{
     }
 
     private static final Set<String> imageExtensions = Set.of(".jpg", ".png");
+
     private static FilenameFilter isImage() {
         return (dir, name) -> imageExtensions.stream().anyMatch(name::endsWith);
     }
@@ -25,17 +26,23 @@ public class FileImageLoader implements ImageLoader{
         return new Image() {
             @Override
             public String name() {
+                assert files != null;
+                if (files.length == 0) {
+                    System.exit(0);
+                }
                 return files[i].getAbsolutePath();
             }
 
             @Override
             public Image next() {
+                assert files != null;
                 return imageAt((i+1) % files.length);
             }
 
             @Override
             public Image prev() {
-                return imageAt((i-1+ files.length) % files.length);
+                assert files != null;
+                return imageAt((i-1 + files.length) % files.length);
             }
         };
     }
